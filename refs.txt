@@ -1,0 +1,12 @@
+https://expressjs.com/es/resources/glossary.html
+https://hosted.weblate.org/translate/osmand/main/ast/?type=todo&offset=1
+https://pugjs.org/language/mixins.html
+https://expressjs.com/es/4x/api.html
+https://developer.mozilla.org/es/docs/Learn/Server-side/Express_Nodejs
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/Displaying_data
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/mongoose
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms
+https://raw.githubusercontent.com/hamishwillee/express-locallibrary-tutorial/master/populatedb.js
+https://pugjs.org/language/includes.html
+https://medium.com/@evangow/server-authentication-basics-express-sessions-passport-and-curl-359b7456003d
+https://purecss.io/start/
