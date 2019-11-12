@@ -12,12 +12,13 @@ html
   body
     div(class="header")
       div(class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed")
-        a(class="pure-menu-heading", href="") Your Site
+        a(class="pure-menu-heading", href="/") Localization Simple Tool
         ul(class="pure-menu-list")
           li(class="pure-menu-item pure-menu-selected")
-            a(href="#", class="pure-menu-link") Home
-          li(class="pure-menu-item")
-            a(href="#", class="pure-menu-link") Tour
+            a(href="/", class="pure-menu-link") Home
+          if req.session
+            li(class="pure-menu-item")
+              a(href="#", class="pure-menu-link") Tour
           li(class="pure-menu-item")
             a(href="/users", class="pure-menu-link") Sign Up
     div(class="content")
