@@ -1,0 +1,73 @@
+extends layout
+
+block content
+
+  script
+    include project.js
+
+  nav(class="navbar is-dark", role="navigation" aria-label="main navigation")
+    div(class="navbar-menu")  
+      div(class="navbar-start")  
+        if project
+          a(href="/", class="navbar-item") Edit Project
+        else
+          a(href="/", class="navbar-item") Create Project
+  br
+  form(method='POST' action='' class='pure-form pure-form-aligned')
+    div.form-group(class='field')
+      label(for='project_name', class='label') Project Name:
+      input#username.form-control(class='input', type='text', placeholder='Project Name' name='project_name' required='true' value=(undefined===project ? '' : project.project_name))
+    div.form-group(class='field')
+      label(for='internal_name',class='label') Internal Name:
+      input#internal_name.form-control(class='input', type='text', placeholder='Internal Name' name='internal_name' required='true' value=(undefined===project ? '' : project.internal_name))
+    div.form-group(class='field')
+      label(for='desc',class='label') Description:
+      textarea#use_qa_review.form-control(class='textarea', name='desc' checked=(undefined===project ? false : project.desc))
+    div.form-group(class='field')
+      label(for='use_qa_review',class='label') Use QA Review:
+      input#use_qa_review.form-control(class='checkbox', type='checkbox', name='use_qa_review' checked=(undefined===project ? false : project.use_qa_review))
+    div.form-group(class='field')
+      label(for='langs',class='label') Supported Langs:
+      table(class='table')      
+        - var count=0;
+        each val in all_langs
+          - count++;
+          if count > 5
+            - count=1;
+            tr          
+          td
+            table(class='table is-narrow')            
+              tr  
+                td
+                  - var custom_lang_name = 'lang_' + val.code;                  
+                  input(class='checkbox', type='checkbox', name=custom_lang_name checked=(undefined===project ? false : val.is_active))
+                td 
+                  figure(class='image is-32x32')
+                    image(src=val.url)           
+                td            
+                  p(class='is-small')=val.name
+
+    if project
+      div.form-group(class='field')
+        a(class='button is-danger modal-button', data-target='modal-delete', aria-haspopup='true', id='showModal', onclick='ShowModalPopupDelete()') Delete Project
+
+    div.form-group(class='field')
+      button.btn.btn-primary(class='button is-link', type='submit') Accept
+
+  div(class='modal', id='modal-delete')
+    div(class='modal-background')
+    div(class='modal-content')
+      article(class='message')        
+        div(class='message-header')
+          p Remove Project
+          button(class='delete', aria-label='delete', onclick='CloseModalPopupDelete()')
+        div(class='message-body') 
+          p Are you sure that you want remove the project: #[strong #{project.project_name}]??
+          br
+          br
+          div(class='buttons')
+            button(class='button is-link', onclick='CloseModalPopupDelete()') Cancel
+            - var remove_url = '/projects/delete/' + project.id;
+            a(class='button is-danger', href=remove_url) Delete
+
+    

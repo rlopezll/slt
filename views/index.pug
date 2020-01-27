@@ -1,4 +1,79 @@
 extends layout
 
 block content
-  h1 Welcome to Localization Simple Tool
+  if session && session.user
+    nav(class="navbar is-dark", role="navigation" aria-label="main navigation")
+      div(class="navbar-menu")  
+        div(class="navbar-start")  
+          a(href="/", class="navbar-item") Projects
+    
+  if projects && projects.length > 0
+    div(class='table-container')
+      table(class='table is-bordered is-fullwidth')
+        tbody
+          - var count = 0;
+          each val in projects
+            if val.enabled
+              - count++;
+              if count > 4
+                - count = 1;
+                tr
+
+              td
+                center
+                  div(class='card', style="width: 250px;height: 340px;")
+                    div(class='card-image')
+                      figure(class='image is-128x128')
+                        a(href='/projects/edit/'+val.id)
+                          img(src='/images/appicons/default0.png' alt=val.display_name)
+                    div(class='card-content')
+                      div(class='media')
+                        div(class='media-content')
+                          a(href='/projects/edit/'+val.id)
+                            p(class='title is-4')=val.display_name                    
+                      div(class='content has-text-left')=val.desc
+                        div(class='content')
+                          progress(class='progress is-small', value='15', max='100')
+                          p(class='help') Progress 15%
+                          table(style={'border-collapse':'collapse','border-spacing': 0}, cellspacing='0')
+                            - var count_lang=0;
+                            tbody
+                              tr
+                              each lang_val in val.all_langs
+                                if lang_val.is_active
+                                  - count_lang++;
+                                  if count_lang > 5
+                                    - count_lang=1;
+                                    tr          
+                                  td(style={'white-space':'nowrap','pading':'0'})
+                                    image(src=lang_val.url, width='24' height='24')           
+                          div(class='tags')
+                            if val.use_qa_review
+                              span(class='tag is-info') QA Review
+          - count++;
+          if count > 4
+            - count = 0;
+            tr
+          td
+            center
+              div(class='card', style="width: 250px;height: 300px;")
+                div(class='card-image')
+                  figure(class='image is-128x128')
+                    a(href='/projects/create')
+                      img(src='/images/appicons/new_application.png')
+                div(class='card-content')
+                  div(class='media')
+                    div(class='media-content')
+                      a(href='/projects/create/')
+                        center
+                          p(class='title is-4') New Project
+    
+  else
+    div(class='title is-ancestor')
+        div(class='title') 
+          div(class='title is-parent is-vertical') 
+            article(class='title is-child notification is-primary') 
+              p(class='title') Welcome to Localization Simple Tool
+
+
+    

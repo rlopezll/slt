@@ -3,19 +3,41 @@ extends layout
 block content
   h1 Create User
   br
-  form(method='POST' action='' class='pure-form pure-form-aligned')
-    div.form-group(class='pure-control-group')
-    div.form-group(class='pure-control-group')
-      label(for='username') Username:
-      input#username.form-control(type='text', placeholder='Login' name='username' required='true' value=(undefined===user ? '' : user.username))
-    div.form-group(class='pure-control-group')
-      label(for='password') Password:
-      input#username.form-control(type='password', placeholder='Password' name='password' required='true' value=(undefined===user ? '' : user.password))
-    div.form-group(class='pure-control-group')
-      label(for='email') Email:
-      input#username.form-control(type='email', placeholder='Email' name='email' required='true' value=(undefined===user ? '' : user.email))
-    div.form-group(class='pure-control-group')
-      label(for='realname') Completed Name:
-      input#username.form-control(type='text', placeholder='Completed Name' name='realname' required='true' value=(undefined===user ? '' : user.realname))
-    div.form-group(class='pure-controls')
-      button.btn.btn-primary(type='submit', class="pure-button pure-button-primary") Accept
+  form(method='POST' action='' class='')
+    div.form-group(class='field')
+      label(class='label', for='username') Username:
+      div.form-group(class='control has-icons-left has-icons-right')
+        if err && err.invalid_username
+          input#username.form-control(class='input is-danger', type='text', placeholder='Login' name='username' required='true' value=(undefined===user ? '' : user.username))
+        else
+          input#username.form-control(class='input', type='text', placeholder='Login' name='username' required='true' value=(undefined===user ? '' : user.username))
+        span(class="icon is-small is-left")
+          i(class="fas fa-user")
+        if err && err.invalid_username
+          span(class="icon is-small is-right")
+            i(class="fas fa-exclamation-triangle")
+          p(class='help is-danger') This username NOT is available
+    div.form-group(class='field')
+      label(class='label', for='password') Password:
+      div.form-group(class='control')
+        input#password.form-control(class='input',type='password', placeholder='Password' name='password' required='true' value=(undefined===user ? '' : user.password))
+    div.form-group(class='field')
+      label(class='label', for='email') Email:
+      div.form-group(class='control has-icons-left has-icons-right')
+        if err && err.invalid_email
+          input#email.form-control(class='input is-danger',type='email', placeholder='Email' name='email' required='true' value=(undefined===user ? '' : user.email))
+        else
+          input#email.form-control(class='input',type='email', placeholder='Email' name='email' required='true' value=(undefined===user ? '' : user.email))
+        span(class="icon is-small is-left")
+          i(class="fas fa-envelope")
+        if err && err.invalid_email
+          span(class="icon is-small is-right")
+            i(class="fas fa-exclamation-triangle")
+          p(class='help is-danger') This email is invalid
+    div.form-group(class='field')
+      label(class='label', for='realname') Completed Name:
+      div.form-group(class='control')
+        input#realname.form-control(class='input', type='text', placeholder='Completed Name' name='realname' required='true' value=(undefined===user ? '' : user.realname))
+    div.form-group(class='field is-grouped')
+      div.form-group(class='control')
+        button.btn.btn-primary(type='submit', class="button is-link") Accept

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const passport = require('passport');
+var User = require('../models/user');
+var bcrypt = require('bcrypt');
 const auth = require('../auth');
 
 /* GET users listing. */
@@ -12,52 +13,75 @@ router.get('/create', function(req, res, next) {
   res.render('user');
 });
 
-// create the login get and post routes
+router.post('/create', function(req, res, next) {
+
+  //Check if user exists
+  User.findOne({'username':req.body.username},'_id', function(err,user_db) {
+    console.log('User.find inside.');
+    if(err) {
+      console.log("Error DB: " + err);
+      next();
+    }
+    else {
+      if(user_db) {
+        console.log('req.body.username:' + req.body.username + ' exists!!');
+        var err = { invalid_username:1 };
+        res.render('user',{ err: err });
+      } else {
+        console.log('req.body.username:' + req.body.username + ' all ok!!');
+        var BCRYPT_SALT_ROUNDS = 12;
+        bcrypt.hash(req.body.password, BCRYPT_SALT_ROUNDS)
+        .then(function(hashedPassword) {
+          var userData = {username:req.body.username, password:hashedPassword, display_name:req.body.realname, email:req.body.email};
+          var new_user = new User(userData);
+          new_user.save(function(err){
+            if(err) {
+              console.log("Error when create new user");
+              return;
+            }
+            console.log('New user: ' + new_user);    
+            return res.redirect('/');
+          });
+        });
+      }
+    }
+  });
+
+});
+
 router.get('/login', (req, res) => {
   res.render('login');
-  // console.log('Inside GET /login callback function')
-  // console.log(req.sessionID)
-  // res.send(`You got the login page!\n`)
 });
 
 router.post('/login', (req, res, next) => {
-  console.log('Inside POST /login callback function');
-  // console.log(req);
-  passport.authenticate('local', { failureRedirect: '/users/login' }, (err, user, info) => {
-    console.log('Inside passport.authenticate() callback');
-    if(err || !user) {
-      console.log(`passport.authenticate() err: ${err}`);
-      return res.redirect('/users/login');
+  console.log('req.body.username:' + req.body.username);
+  console.log('req.body.password:' + req.body.password);
+  auth.authenticate(req.body.username, req.body.password, function(err, user){
+    if (user) {
+      // Regenerate session when signing in
+      // to prevent fixation
+      req.session.regenerate(function(){
+        // Store the user's primary key
+        // in the session store to be retrieved,
+        // or in this case the entire user object
+        req.session.user = user;
+        req.session.success = 'Authenticated as ' + user.name
+          + ' click to <a href="/logout">logout</a>. '
+          + ' You may now access <a href="/restricted">/restricted</a>.';
+        res.redirect('/');
+      });
+    } else {
+      req.session.error = 'Authentication failed, please check your '
+        + ' username and password.'
+        + ' (use "tj" and "foobar")';
+      res.redirect('/users/login');
     }
-    // res.json({ user: user.toAuthJSON() });
-    // if(!req.session.passport)
-    // {
-    //   console.log(`passport.authenticate() req.session.passport: null`);
-    //   return res.redirect('/users/login');
-    // }
-    // console.log(`req.session.passport: ${JSON.stringify(req.session.passport)}`);
-    // console.log(`req.user: ${JSON.stringify(req.user)}`);
-    
-    req.login(user, (err) => {
-      console.log('Inside req.login() callback');
-      console.log(`req.session.passport: ${JSON.stringify(req.session.passport)}`);
-      console.log(`req.user: ${JSON.stringify(req.user)}`);
-      if(err) {
-        console.log(`req.login err: ${err}`);
-      }
-      console.log('You were authenticated & logged in!');
-      // const user = passportUser;
-      // user.token = passportUser.generateJWT();
-      // res.json({ user: user.toAuthJSON() });
-      return res.redirect('/abc');
-      // return res.send('You were authenticated & logged in!\n');
-    })
-  })(req, res, next);
-})
+  });
+});
 
 // create the login get and post routes
 router.get('/logout', (req, res) => {
-  req.logout();  
+  console.log('user logout');
   req.session.destroy(function (err) {
     if(err) {
       console.log(`req.session.destroy err: ${err}`);
@@ -65,7 +89,6 @@ router.get('/logout', (req, res) => {
       res.clearCookie('my.connect.sid');
       console.log('logout all ok!');
     }
-    // req.session.passport.user = null;
     res.redirect('/users/login');
   });
 });

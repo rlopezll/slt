@@ -4,15 +4,13 @@ block content
   h1 Login User
   br
   form(method='POST' action='' class='pure-form pure-form-aligned')
-    div.form-group(class='pure-control-group')
-    div.form-group(class='pure-control-group')
-      label(for='username') Username:
-      input#username.form-control(type='text', placeholder='Login' name='username' required='true' value=(undefined===user ? '' : user.username))
-    div.form-group(class='pure-control-group')
-      label(for='password') Password:
-      input#password.form-control(type='password', placeholder='Password' name='password' required='true' value=(undefined===user ? '' : user.password))
-    div.form-group(class='pure-controls')
+    div.form-group(class='field')
+      label(class='label', for='username') Username:
+      input#username.form-control(class='input', type='text', placeholder='Login' name='username' required='true' value=(undefined===user ? '' : user.username))
+    div.form-group(class='field')
+      label(class='label', for='password') Password:
+      input#password.form-control(class='input', type='password', placeholder='Password' name='password' required='true' value=(undefined===user ? '' : user.password))
+    div.form-group(class='field is-grouped')
+      div.form-group(class='control')
+        button.btn.btn-primary(type='submit', class="button is-link") Accept
       a(href='create') or Create New User
-      br
-      br
-      button.btn.btn-primary(type='submit', class="pure-button pure-button-primary") Accept
